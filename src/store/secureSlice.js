@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from 'axios';
+import API from "../axios";
 
 export const fetchRegistration = createAsyncThunk(
   'secureSlice/fetchRegistration',
   async ({ login, password, isAdmin }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/register', {
+      const response = await API.post('/register', {
         login,
         password,
         isAdmin
@@ -22,7 +22,7 @@ export const fetchLogin = createAsyncThunk(
   'secureSlice/fetchLogin',
   async ({ login, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/login', {
+      const response = await API.post('/login', {
         login,
         password
       })
@@ -37,12 +37,17 @@ export const fetchLogin = createAsyncThunk(
 const secureSlice = createSlice({
   name: 'secure',
   initialState: {
+    isAuth: false,
     loading: false,
     status: 0
   },
   reducers: {
     unsetStatus (state) {
       state.status = 0
+    },
+    unsetAuth (state) {
+      state.isAuth = false
+      localStorage.clear();
     }
   },
   extraReducers: {
@@ -51,7 +56,10 @@ const secureSlice = createSlice({
       state.loading = true
     },
     [fetchRegistration.fulfilled]: (state, { payload }) => {
+      state.isAuth = true;
       state.status = 200
+      localStorage.setItem('login', payload.login);
+      localStorage.setItem('password', payload.password);
       state.loading = false
     },
     [fetchRegistration.rejected]: (state) => {
@@ -63,7 +71,10 @@ const secureSlice = createSlice({
       state.loading = true
     },
     [fetchLogin.fulfilled]: (state, { payload }) => {
+      state.isAuth = true;
       state.status = 200
+      localStorage.setItem('login', payload.login);
+      localStorage.setItem('password', payload.password);
       state.loading = false
     },
     [fetchLogin.rejected]: (state) => {
@@ -73,5 +84,5 @@ const secureSlice = createSlice({
   }
 })
 
-export const { unsetStatus } = secureSlice.actions
+export const { unsetStatus, unsetAuth } = secureSlice.actions
 export default secureSlice.reducer

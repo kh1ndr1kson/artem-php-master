@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice, createEntityAdapter } from '@reduxjs/toolkit'
-import axios from 'axios';
+import API from "../axios";
 
 export const fetchNewsChecked = createAsyncThunk(
   'newsSlice/fetchNewsChecked',
   async (args, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/news/reviewed')
+      const response = await API.get('/news/reviewed')
 
       return response.data
     } catch (error) {
@@ -18,7 +18,7 @@ export const fetchNewsCheckedCreate = createAsyncThunk(
   'newsSlice/fetchNewsCheckedCreate',
   async ({ title, description }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/news/reviewed', {
+      const response = await API.post('/news/reviewed', {
         title,
         description
       })
@@ -34,7 +34,7 @@ export const fetchNewsUnchecked = createAsyncThunk(
   'newsSlice/fetchNewsUnchecked',
   async (args, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/news/underreview')
+      const response = await API.get('/news/underreview')
 
       return response.data
     } catch (error) {
@@ -47,7 +47,7 @@ export const fetchNewsUncheckedCreate = createAsyncThunk(
   'newsSlice/fetchNewsUncheckedCreate',
   async ({ title, description }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/news/underreview', {
+      const response = await API.post('/news/underreview', {
         title,
         description
       })
@@ -82,6 +82,11 @@ const newsSlice = createSlice({
       newsAdapter.setAll(state, payload)
       state.loading = false
     },
+    [fetchNewsChecked.rejected]: (state) => {
+      newsAdapter.removeAll(state);
+      state.status = 500
+      state.loading = false
+    },
     /* POST checked */
     [fetchNewsCheckedCreate.pending]: (state) => {
       state.loading = true
@@ -101,6 +106,11 @@ const newsSlice = createSlice({
     },
     [fetchNewsUnchecked.fulfilled]: (state, { payload }) => {
       newsAdapter.setAll(state, payload)
+      state.loading = false
+    },
+    [fetchNewsUnchecked.rejected]: (state) => {
+      newsAdapter.removeAll(state);
+      state.status = 500
       state.loading = false
     },
     /* POST unchecked */
