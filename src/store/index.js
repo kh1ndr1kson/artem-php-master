@@ -8,7 +8,7 @@ export const store = configureStore({
   reducer: {
     secure: secureSlice,
     news: newsSlice,
-    commentsSlice: commentsSlice
+    comments: commentsSlice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
   devTools: process.env.NODE_ENV !== 'production'

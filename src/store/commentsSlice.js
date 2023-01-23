@@ -1,11 +1,15 @@
 import { createAsyncThunk, createSlice, createEntityAdapter } from '@reduxjs/toolkit'
-import axios from 'axios';
+import API from "../axios";
 
 export const fetchComments = createAsyncThunk(
   'commentsSlice/fetchComments',
-  async (args, { rejectWithValue }) => {
+  async ({newsId}, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/comments')
+      const response = await API.get('/comments/', {
+        params: {
+          id: newsId
+        }
+      })
 
       return response.data
     } catch (error) {
@@ -16,11 +20,12 @@ export const fetchComments = createAsyncThunk(
 
 export const fetchCommentCreate = createAsyncThunk(
   'commentsSlice/fetchCommentCreate',
-  async ({ title, description }, { rejectWithValue }) => {
+  async ({ authorId, newsId, content }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/comments', {
-        title,
-        description
+      const response = await API.post('/comments/', {
+        authorId,
+        newsId,
+        content
       })
 
       return response.data
@@ -30,11 +35,11 @@ export const fetchCommentCreate = createAsyncThunk(
   }
 )
 
-const commentsAdapter = createEntityAdapter()
-const initialState = commentsAdapter.getInitialState({
+const initialState = {
+  data: [],
   loading: false,
   status: 0
-})
+};
 
 const commentsSlice = createSlice({
   name: 'comments',
@@ -50,7 +55,8 @@ const commentsSlice = createSlice({
       state.loading = true
     },
     [fetchComments.fulfilled]: (state, { payload }) => {
-      commentsAdapter.setAll(state, payload)
+      console.log(payload)
+      state.data = payload;
       state.loading = false
     },
     /* POST checked */
@@ -58,7 +64,7 @@ const commentsSlice = createSlice({
       state.loading = true
     },
     [fetchCommentCreate.fulfilled]: (state, { payload }) => {
-      commentsAdapter.addOne(state, payload)
+      state.data.push(payload);
       state.status = 201
       state.loading = false
     },
@@ -69,6 +75,5 @@ const commentsSlice = createSlice({
   }
 })
 
-export const selectors = commentsAdapter.getSelectors((state) => state.comments)
 export const { unsetStatus } = commentsSlice.actions
 export default commentsSlice.reducer

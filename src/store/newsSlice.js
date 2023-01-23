@@ -92,7 +92,7 @@ const newsSlice = createSlice({
       state.loading = true
     },
     [fetchNewsCheckedCreate.fulfilled]: (state, { payload }) => {
-      newsAdapter.addOne(state, payload)
+      // newsAdapter.addOne(state, payload)
       state.status = 201
       state.loading = false
     },
@@ -118,7 +118,7 @@ const newsSlice = createSlice({
       state.loading = true
     },
     [fetchNewsUncheckedCreate.fulfilled]: (state, { payload }) => {
-      newsAdapter.addOne(state, payload)
+      // newsAdapter.addOne(state, payload)
       state.status = 201
       state.loading = false
     },

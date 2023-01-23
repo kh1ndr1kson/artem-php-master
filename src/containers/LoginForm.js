@@ -27,7 +27,7 @@ export default function LoginForm() {
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Логин</Form.Label>
         <Form.Control
-          placeholder="Enter email"
+          placeholder="Логин"
           onChange={(e) => setLogin(e.target.value)}
         />
       </Form.Group>
@@ -35,7 +35,7 @@ export default function LoginForm() {
         <Form.Label>Пароль</Form.Label>
         <Form.Control
           type="password"
-          placeholder="Password"
+          placeholder="Пароль"
           onChange={(e) => setPassword(e.target.value)}
         />
       </Form.Group>

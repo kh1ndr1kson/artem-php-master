@@ -37,6 +37,7 @@ export const fetchLogin = createAsyncThunk(
 const secureSlice = createSlice({
   name: 'secure',
   initialState: {
+    user: {},
     isAuth: false,
     loading: false,
     status: 0
@@ -56,6 +57,7 @@ const secureSlice = createSlice({
       state.loading = true
     },
     [fetchRegistration.fulfilled]: (state, { payload }) => {
+      state.user = payload;
       state.isAuth = true;
       state.status = 200
       localStorage.setItem('login', payload.login);
@@ -71,6 +73,7 @@ const secureSlice = createSlice({
       state.loading = true
     },
     [fetchLogin.fulfilled]: (state, { payload }) => {
+      state.user = payload;
       state.isAuth = true;
       state.status = 200
       localStorage.setItem('login', payload.login);
